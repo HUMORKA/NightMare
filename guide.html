@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《梦魇猎食》游玩指南</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b26;
+    --panel2: #1c2333;
+    --ink: #d8dee9;
+    --dim: #8b93a5;
+    --blood: #c0392b;
+    --blood2: #e74c3c;
+    --spirit: #9b59b6;
+    --gold: #d4a017;
+    --teal: #1abc9c;
+    --line: #2a3348;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    line-height: 1.8;
+    padding: 0 0 60px;
+  }
+  .hero {
+    text-align: center;
+    padding: 64px 20px 40px;
+    background: radial-gradient(ellipse at 50% 0%, #251522 0%, var(--bg) 70%);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero h1 {
+    font-size: 44px;
+    letter-spacing: 14px;
+    color: var(--blood2);
+    text-shadow: 0 0 24px rgba(231, 76, 60, .45);
+    margin-bottom: 10px;
+  }
+  .hero .sub { color: var(--dim); letter-spacing: 6px; font-size: 15px; }
+  .hero .tagline {
+    margin-top: 22px;
+    display: inline-block;
+    padding: 8px 26px;
+    border: 1px solid var(--blood);
+    border-radius: 30px;
+    color: var(--blood2);
+    font-size: 14px;
+    letter-spacing: 3px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+  section { margin-top: 48px; }
+  h2 {
+    font-size: 24px;
+    color: var(--ink);
+    padding-left: 14px;
+    border-left: 4px solid var(--blood);
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+  }
+  h2 .no { color: var(--blood2); margin-right: 8px; font-family: Consolas, monospace; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card h3 { color: var(--gold); font-size: 17px; margin-bottom: 10px; letter-spacing: 1px; }
+  p { margin-bottom: 10px; color: #c4cbd8; }
+  p:last-child { margin-bottom: 0; }
+  em { color: var(--blood2); font-style: normal; font-weight: bold; }
+  strong { color: var(--teal); }
+  .k {
+    display: inline-block;
+    min-width: 26px;
+    text-align: center;
+    padding: 1px 8px;
+    margin: 0 2px;
+    background: #232c42;
+    border: 1px solid #3a4666;
+    border-bottom-width: 3px;
+    border-radius: 5px;
+    color: #e8ecf5;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 9px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: var(--panel2); color: var(--gold); letter-spacing: 1px; white-space: nowrap; }
+  td { color: #bfc7d6; background: rgba(255,255,255,.015); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .enemy { display: flex; gap: 18px; flex-wrap: wrap; }
+  .enemy .card { flex: 1 1 380px; }
+  .risk { font-size: 12px; padding: 2px 10px; border-radius: 12px; float: right; }
+  .r-low  { background: #14312a; color: #2ecc71; border: 1px solid #1e5c48; }
+  .r-mid  { background: #3a2c12; color: #f39c12; border: 1px solid #6b4f16; }
+  .r-high { background: #3a1512; color: #e74c3c; border: 1px solid #6b241d; }
+  .tip {
+    background: linear-gradient(135deg, #1a2135, #141a29);
+    border-left: 4px solid var(--teal);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #a9d6cd;
+  }
+  .tip b { color: var(--teal); }
+  .warn {
+    background: #241318;
+    border-left: 4px solid var(--blood2);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #d9a3a3;
+  }
+  .warn b { color: var(--blood2); }
+  .ending { border: 1px solid var(--line); border-radius: 10px; padding: 18px 22px; margin-bottom: 14px; background: var(--panel); }
+  .ending .name { font-size: 18px; font-weight: bold; letter-spacing: 2px; margin-bottom: 6px; }
+  .ending .cond { font-size: 13px; color: var(--dim); margin-bottom: 8px; }
+  .route { counter-reset: step; }
+  .route li {
+    list-style: none;
+    position: relative;
+    padding: 8px 0 8px 44px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .route li:last-child { border-bottom: none; }
+  .route li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute; left: 0; top: 8px;
+    width: 28px; height: 28px;
+    line-height: 28px; text-align: center;
+    background: #2a1418;
+    color: var(--blood2);
+    border: 1px solid #57241f;
+    border-radius: 50%;
+    font-family: Consolas, monospace;
+    font-weight: bold;
+  }
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    color: var(--dim);
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  .toc {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .toc a {
+    color: #9fb3d9;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 14px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
+  .toc a:hover { color: var(--blood2); border-color: var(--blood); }
+  .badge-spirit { color: var(--spirit); font-weight: bold; }
+  .badge-normal { color: #f1c40f; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>梦魇猎食</h1>
+  <div class="sub">NIGHTMARE PREDATION · HD-2D 搜打撤生存指南</div>
+  <div class="tagline">七天 · 一百个灵魂 · 一场交易</div>
+</div>
+
+<div class="wrap">
+
+<div class="toc">
+  <a href="#s1">01 剧情背景</a>
+  <a href="#s2">02 基本操作</a>
+  <a href="#s3">03 装备手册</a>
+  <a href="#s4">04 敌人图鉴</a>
+  <a href="#s5">05 地图导览</a>
+  <a href="#s6">06 昼夜与时间</a>
+  <a href="#s7">07 灵魂与补给</a>
+  <a href="#s8">08 三种结局</a>
+  <a href="#s9">09 推荐路线</a>
+  <a href="#s10">10 新手十诫</a>
+</div>
+
+<!-- 01 剧情背景 -->
+<section id="s1">
+  <h2><span class="no">01</span>剧情背景</h2>
+  <div class="card">
+    <p>你是一名猎人，在追踪猎物时误入了密林深处的<em>古老祭坛</em>，惊醒了沉睡的梦魇。</p>
+    <p>作为惊扰它的代价，你被施加了诅咒：<strong>七天之内，献上一百个灵魂</strong>。</p>
+    <p>梦魇给了你两样"礼物"——一把猎枪和一支手电筒。丛林里的变异动物、废墟与墓园里的丧尸、还有看不见的鬼魂，都是灵魂的来源。七天的期限一到，无论你集齐与否，诅咒都将兑现。</p>
+    <p>而当你真的集齐一百个灵魂站在祭坛前时，你才需要做出真正的选择……</p>
+  </div>
+</section>
+
+<!-- 02 基本操作 -->
+<section id="s2">
+  <h2><span class="no">02</span>基本操作</h2>
+  <div class="card">
+    <table>
+      <tr><th style="width:220px">按键</th><th>功能</th></tr>
+      <tr><td><span class="k">W</span><span class="k">A</span><span class="k">S</span><span class="k">D</span> / 方向键</td><td>移动（角色自动朝移动方向播放走路动画）</td></tr>
+      <tr><td><span class="k">Shift</span></td><td>奔跑（赶路、脱离包围必备）</td></tr>
+      <tr><td>鼠标移动</td><td>瞄准（枪口跟随准星方向）</td></tr>
+      <tr><td>鼠标左键</td><td>射击（消耗弹匣内子弹）</td></tr>
+      <tr><td><span class="k">Q</span></td><td><strong>切换普通弹 / 灵弹</strong>（打鬼魂必须用灵弹）</td></tr>
+      <tr><td><span class="k">R</span></td><td>装填（弹匣 5 发，装填需要时间）</td></tr>
+      <tr><td><span class="k">F</span></td><td>手电筒开关（照出变异体真身与隐身鬼魂，持续消耗电池）</td></tr>
+      <tr><td><span class="k">E</span></td><td>互动：与梦魇对话、开箱、古堡大门传送、传送门返回</td></tr>
+      <tr><td><span class="k">M</span></td><td>开关小地图（右上角常驻显示）</td></tr>
+      <tr><td><span class="k">Esc</span></td><td>暂停菜单</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 03 装备手册 -->
+<section id="s3">
+  <h2><span class="no">03</span>装备手册</h2>
+  <div class="enemy">
+    <div class="card">
+      <h3>🔫 猎枪</h3>
+      <p>弹匣容量 <em>5 发</em>，屏幕下方 HUD 显示当前弹药。两种弹药随时用 <span class="k">Q</span> 切换：</p>
+      <table>
+        <tr><th>弹药</th><th>对动物/变异体</th><th>对丧尸</th><th>对鬼魂</th></tr>
+        <tr>
+          <td><span class="badge-normal">普通弹</span></td>
+          <td>有效</td><td>有效</td><td><em>无效！</em></td>
+        </tr>
+        <tr>
+          <td><span class="badge-spirit">灵弹</span></td>
+          <td>有效</td><td>有效</td><td><strong>唯一有效</strong></td>
+        </tr>
+      </table>
+      <p style="margin-top:10px">普通弹相对充裕，灵弹珍贵——<strong>见到鬼魂再切灵弹</strong>，平时用普通弹清理动物和丧尸。空仓连点会自动尝试装填。</p>
+    </div>
+    <div class="card">
+      <h3>🔦 手电筒</h3>
+      <p><span class="k">F</span> 开关，锥形光照亮前方。它有三种用途：</p>
+      <p>① <strong>照出伪装的变异体</strong>——灯光下的变异动物会显出肋骨、红眼与血渍；<br>
+      ② <strong>照出隐身的鬼魂</strong>——不打开手电筒你根本看不见它们；<br>
+      ③ 夜间照明。</p>
+      <p>代价是持续消耗<em>电池</em>。电池耗尽后手电筒熄灭，夜里会非常危险，记得从补给箱里囤电池。</p>
+      <div class="warn"><b>注意：</b>手电筒照到变异体也会激怒它，做好开火准备再照。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 敌人图鉴 -->
+<section id="s4">
+  <h2><span class="no">04</span>敌人图鉴</h2>
+  <div class="enemy">
+    <div class="card">
+      <h3>🐄 普通动物 <span class="risk r-low">危险度 ★</span></h3>
+      <p>丛林里的牛、羊、猪、鹿，不会主动攻击。是前期最安全的灵魂来源，普通弹即可收割。看到一群动物先别急着全打——先用<strong>手电筒逐一排查</strong>，混在里面的可能是变异体。</p>
+    </div>
+    <div class="card">
+      <h3>🩸 变异体 <span class="risk r-mid">危险度 ★★★</span></h3>
+      <p>伪装成动物的怪物，约占丛林动物的四分之一。手电照出真身或受到攻击后会<em>被激怒</em>，疯狂扑向你。两种弹药都能杀死它。掉落物比普通动物好（含灵弹、电池）。</p>
+      <div class="tip"><b>技巧：</b>先在安全距离用枪打第一发激怒它，边后退边射击——跑动射击比站桩对撸安全得多。</div>
+    </div>
+    <div class="card">
+      <h3>🧟 丧尸 <span class="risk r-mid">危险度 ★★</span></h3>
+      <p>游荡在别墅废墟、墓园和古堡内部，移动缓慢但数量多。两种弹药都有效。会缓慢追击，被围住时用 Shift 拉开距离逐个击破。</p>
+    </div>
+    <div class="card">
+      <h3>👻 鬼魂 <span class="risk r-high">危险度 ★★★★</span></h3>
+      <p>栖息在墓园、别墅废墟和古堡深处。<em>平时完全隐形</em>，只有手电筒的光锥能照出轮廓；<em>只有灵弹能伤害它</em>，普通弹打上去等于浪费。还能穿墙，被盯上时别指望用障碍物摆脱。</p>
+      <div class="tip"><b>技巧：</b>进入墓园前先备好至少 5 发灵弹 + 半格以上电池。听到夜里凄厉的哭声，说明附近有鬼魂。</div>
+    </div>
+  </div>
+  <div class="warn"><b>夜晚全图怪物数量提升、攻击性更强，雾也会变浓。</b>天黑前要么回祭坛附近的安全区蹲守，要么确认弹药电池充足再行动。</div>
+</section>
+
+<!-- 05 地图导览 -->
+<section id="s5">
+  <h2><span class="no">05</span>地图导览</h2>
+  <div class="card">
+    <p>世界为 <strong>110×110</strong> 的大地图，中央出生，按方位分为四大区域，另有三座每局随机生成的古堡。按 <span class="k">M</span> 打开小地图：区域边界、道路、古堡位置、未开的箱子、敌人红点、你的朝向箭头一目了然。</p>
+    <table>
+      <tr><th style="width:150px">区域</th><th>方位</th><th>说明</th></tr>
+      <tr>
+        <td><span class="dot" style="background:#e74c3c"></span>祭坛空地</td>
+        <td>中央（出生点）</td>
+        <td>营火出生复活点。悬浮的<em>梦魇本体</em>可以对话——交付灵魂、触发结局都在这里。附近相对安全。</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:#27ae60"></span>原始丛林</td>
+        <td>北方</td>
+        <td>动物与变异体的栖息地，灵魂的主要产地。树木茂密，注意别被激怒的变异体堵在树丛里。</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:#8e44ad"></span>荒废别墅 + 废墟</td>
+        <td>西北</td>
+        <td>两处废墟 + 别墅残骸，丧尸与鬼魂的巢穴，散布不少补给箱。路牌警告：不要在夜里靠近。</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:#95a5a6"></span>墓园</td>
+        <td>东北</td>
+        <td>16 块墓碑，丧尸密度高，鬼魂最爱聚集的地方。风险与收益并存。</td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:#d4a017"></span>古堡 ×3</td>
+        <td>随机分布</td>
+        <td>每局从 7 个锚点随机刷 3 座。走到泛紫光的大门前按 <span class="k">E</span> 传送进内部大厅。</td>
+      </tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>🏰 古堡内部（高风险高回报）</h3>
+    <p>石柱回廊、红毯、王座与烛台的大厅，固定驻守 <em>4 丧尸 + 2 鬼魂</em>（宝箱没搬空前重进会补充守卫）。里面有 <strong>3 个普通补给箱 + 1 个金色宝箱</strong>。</p>
+    <p>金宝箱内容：<strong>灵魂结晶 ×6、灵弹 ×6、电池、药草</strong>——三座古堡全清 = 白捡 18 个灵魂，约占通关需求的五分之一。</p>
+    <p>大厅南端有<em>青色传送门</em>，按 <span class="k">E</span> 返回丛林。小地图在古堡内会自动切换成室内平面图，出口和宝箱都有标记。</p>
+    <div class="warn"><b>进堡清单：</b>灵弹 ≥ 10 发、电池 ≥ 2/3、生命值满、弹匣装满。鬼魂 + 丧尸混编是全游戏最难的战斗。</div>
+  </div>
+</section>
+
+<!-- 06 昼夜与时间 -->
+<section id="s6">
+  <h2><span class="no">06</span>昼夜与时间</h2>
+  <div class="card">
+    <table>
+      <tr><th style="width:180px">项目</th><th>数值</th></tr>
+      <tr><td>一天时长</td><td><strong>90 秒</strong>（白天 + 黄昏 + 黑夜）</td></tr>
+      <tr><td>总期限</td><td><em>7 天 ≈ 10.5 分钟</em></td></tr>
+      <tr><td>白天</td><td>视野好、怪物少、攻击性低——采集与狩猎的黄金时段</td></tr>
+      <tr><td>黄昏</td><td>天色转红、雾渐浓，抓紧回安全区或找掩体</td></tr>
+      <tr><td>黑夜</td><td>浓雾 + 全视野受限，怪物增援上限大增、鬼魂四处游荡</td></tr>
+    </table>
+    <p style="margin-top:10px">HUD 顶部显示当前天数与当日进度条，<strong>倒计时归零即触发失败结局</strong>，请随时留意。</p>
+  </div>
+</section>
+
+<!-- 07 灵魂与补给 -->
+<section id="s7">
+  <h2><span class="no">07</span>灵魂与补给</h2>
+  <div class="card">
+    <h3>💀 灵魂机制</h3>
+    <p>击杀任何敌人都会掉落灵魂，<strong>自动飞向你吸附收集</strong>，无需跑位捡拾。HUD 显示当前持有数 / 100。</p>
+    <table>
+      <tr><th>来源</th><th>产出</th></tr>
+      <tr><td>普通动物</td><td>灵魂 ×1</td></tr>
+      <tr><td>变异体 / 丧尸</td><td>灵魂 ×1 + 概率掉落弹药、电池、药草</td></tr>
+      <tr><td>鬼魂</td><td>灵魂 ×2（高风险高回报）</td></tr>
+      <tr><td>古堡金宝箱</td><td>灵魂结晶 ×6（一次性）</td></tr>
+    </table>
+    <p style="margin-top:10px"><em>倒下惩罚：</em>死亡不是 Game Over——你会在祭坛营火处复活，但<em>损失身上 15% 的灵魂</em>。越到后期死一次越亏，保命优先。</p>
+  </div>
+  <div class="card">
+    <h3>📦 补给箱（全图共 44 个）</h3>
+    <p>主世界 32 个 + 古堡内部 12 个。靠近后准星出现提示，按 <span class="k">E</span> 开启。可能开出：普通弹、灵弹、电池、药草（生命 +40）。开过的箱子会变灰，不会刷新。</p>
+    <div class="tip"><b>建议：</b>白天顺路见到箱子就开，电池和灵弹永远不嫌多——它们决定了你敢不敢进墓园和古堡。</div>
+  </div>
+</section>
+
+<!-- 08 三种结局 -->
+<section id="s8">
+  <h2><span class="no">08</span>三种结局</h2>
+  <div class="ending">
+    <div class="name" style="color:#e74c3c">结局 A · 献祭「世界末日」</div>
+    <div class="cond">达成条件：集齐 100 灵魂 → 回祭坛对话 → 选择「献祭」</div>
+    <p>你把一百个灵魂交给梦魇。它获得了挣脱封印的力量，吞噬了这个世界——包括你。</p>
+  </div>
+  <div class="ending">
+    <div class="name" style="color:#1abc9c">结局 B · 释放「世界和平」</div>
+    <div class="cond">达成条件：集齐 100 灵魂 → 回祭坛对话 → 选择「释放」</div>
+    <p>你选择将灵魂尽数释放。亡者安息，诅咒解除，梦魇沉入长眠。你活着走出了这片森林。</p>
+  </div>
+  <div class="ending">
+    <div class="name" style="color:#8b93a5">结局 C · 期限已至</div>
+    <div class="cond">达成条件：第 7 天结束仍未交付 100 灵魂</div>
+    <p>诅咒兑现。你的躯体倒在祭坛前，而你，成为了梦魇的一部分——下一个闯入的猎人，面对的将是你的灵魂。</p>
+  </div>
+  <div class="tip"><b>提示：</b>结局 A / B 的选择权在你手里。想都看一遍的话，通关一次后重新开始游戏即可（选择不影响二周目）。</div>
+</section>
+
+<!-- 09 推荐路线 -->
+<section id="s9">
+  <h2><span class="no">09</span>推荐路线（速通 100 灵魂）</h2>
+  <div class="card">
+    <ul class="route">
+      <li><strong>第 1 天（白天）</strong>：熟悉操作，在出生点附近开箱囤弹药，和梦魇对话了解规则。向北进丛林。</li>
+      <li><strong>第 1 天（夜）</strong>：回祭坛附近蹲守，或利用营火安全区整理装备。夜战不划算。</li>
+      <li><strong>第 2 ~ 3 天</strong>：丛林刷动物 + 变异体。手电筒逐个排查动物群，专打确认安全的普通动物，稳攒 25~35 灵魂。</li>
+      <li><strong>第 4 天</strong>：带足普通弹，白天扫荡西北别墅废墟——清丧尸、顺路开箱，目标是囤出 10+ 灵弹和充足电池。</li>
+      <li><strong>第 5 天</strong>：白天突进东北墓园。手电常开，见到鬼魂立刻 <span class="k">Q</span> 切灵弹点名。这里是灵魂效率最高的区域（鬼魂 ×2）。</li>
+      <li><strong>第 6 天</strong>：攻打古堡。一座古堡 = 6 灵魂结晶 + 3 箱补给，视剩余时间打 1~3 座。灵弹留给厅内两只鬼魂。</li>
+      <li><strong>第 7 天</strong>：清点灵魂补缺口，提前回祭坛交割。切忌拖到最后时刻——路上死一次 15% 灵魂可能直接宣判失败。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 10 新手十诫 -->
+<section id="s10">
+  <h2><span class="no">10</span>新手十诫</h2>
+  <div class="card">
+    <ol style="padding-left:22px; color:#c4cbd8">
+      <li>普通弹打活物，<em>灵弹只留给鬼魂</em>——切换弹药不要嫌麻烦。</li>
+      <li>见到动物先照手电再开枪，别对着一群"牛羊"疯狂倾泻弹药。</li>
+      <li>电池永远保持一半以上，没有手电的夜晚等于裸奔。</li>
+      <li>弹匣只有 5 发，养成"打两发、找掩体、再装填"的节奏。</li>
+      <li>被变异体追击时<em>边跑边打</em>，Shift 拉开距离比站桩对射靠谱。</li>
+      <li>鬼魂会穿墙，别试图绕柱子卡它，直接灵弹对轰。</li>
+      <li>天黑前 20 秒看一眼小地图，规划好撤退路线。</li>
+      <li>进古堡前默念清单：灵弹、电池、血量、满弹匣。</li>
+      <li>灵魂接近 100 时改为保守打法——死亡扣 15%，越接近终点越输不起。</li>
+      <li>第 7 天黄昏前必须站在祭坛旁。交完灵魂，选择才属于你。</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  —— 《梦魇猎食》游玩指南 · 祝你活过第七天 ——
+</footer>
+
+</div>
+</body>
+</html>
